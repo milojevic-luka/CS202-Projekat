@@ -1,7 +1,6 @@
 package application.db;
 
 import application.entities.Coach;
-import javafx.scene.chart.PieChart;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,12 +18,12 @@ public class CoachDAO implements DAO<Coach> {
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                String id = resultSet.getString("coach_id");
+                int id = resultSet.getInt("coach_id");
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
                 String gender = resultSet.getString("gender");
                 String status = resultSet.getString("status");
-                Coach coach = new Coach(Integer.parseInt(id), firstName, lastName, gender, status);
+                Coach coach = new Coach(id, firstName, lastName, gender, status);
                 coaches.add(coach);
             }
         }
