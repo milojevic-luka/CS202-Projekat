@@ -16,7 +16,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -106,7 +105,49 @@ public class CoachController implements Initializable {
 
     }
 
+    @FXML
+    public void addCoach(ActionEvent actionEvent) throws SQLException {
+        Coach coach = createCoach();
+        CoachDAO dao = new CoachDAO();
+        dao.insert(coach);
+        populateTable();
+    }
+
+    @FXML
+    public void updateCoach(ActionEvent actionEvent) throws SQLException {
+        Coach coach = createCoach();
+        CoachDAO dao = new CoachDAO();
+        dao.update(coach);
+        populateTable();
+    }
+
+    @FXML
+    public void deleteCoach(ActionEvent actionEvent) throws SQLException {
+        Coach coach = createCoach();
+        CoachDAO dao = new CoachDAO();
+        dao.delete(coach);
+        populateTable();
+    }
+
+    @FXML
+    public void clearFields(ActionEvent actionEvent) {
+        coachIdInput.setText("");
+        firstNameInput.setText("");
+        lastNameInput.setText("");
+    }
+
+    private Coach createCoach() {
+        String coachId = coachIdInput.getText();
+        String firstName = firstNameInput.getText();
+        String lastName = lastNameInput.getText();
+        String gender = genderComboBox.getValue();
+        String status = statusComboBox.getValue();
+        return new Coach(Integer.parseInt(coachId), firstName, lastName, gender, status);
+    }
+
     private void populateTable() throws SQLException {
+        coachTableView.getItems().clear();
+
         List<Coach> coaches = new CoachDAO().getAll();
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("coachId"));
@@ -118,14 +159,29 @@ public class CoachController implements Initializable {
         coachTableView.getItems().addAll(coaches);
     }
 
+    private void tableSelection(){
+        coachTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if(newVal != null){
+                coachIdInput.setText(String.valueOf(newVal.getCoachId()));
+                firstNameInput.setText(newVal.getFirstName());
+                lastNameInput.setText(newVal.getLastName());
+                genderComboBox.setValue(newVal.getGender());
+                statusComboBox.setValue(newVal.getStatus());
+            }
+        });
+    }
+
     private void populateComboBox() {
         // Gender
         genderComboBox.getItems().add("Male");
         genderComboBox.getItems().add("Female");
+        genderComboBox.setValue("Male");
 
         //Status
         statusComboBox.getItems().add("Active");
         statusComboBox.getItems().add("Inactive");
+        statusComboBox.setValue("Active");
     }
 
     @Override
@@ -133,6 +189,7 @@ public class CoachController implements Initializable {
         try {
             populateComboBox();
             populateTable();
+            tableSelection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
