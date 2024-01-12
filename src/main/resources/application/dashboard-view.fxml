@@ -16,7 +16,7 @@
          <children>
             <Label text="Welcome to Dashboard">
                <font>
-                  <Font size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
             </Label>
             <VBox alignment="CENTER" prefHeight="499.0" prefWidth="222.0" spacing="20.0">
