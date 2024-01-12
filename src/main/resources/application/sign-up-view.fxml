@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="267.0" prefWidth="676.0" spacing="10.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.SignUpController">
+   <children>
+      <Label text="Username" />
+      <TextField fx:id="usernameInput" promptText="Username" />
+      <Label text="Email" />
+      <TextField fx:id="emailInput" promptText="Email" />
+      <Label text="Password" />
+      <TextField fx:id="passwordInput" promptText="Password" />
+      <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#signUp" text="Sign Up" />
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>
