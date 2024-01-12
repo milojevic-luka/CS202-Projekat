@@ -19,8 +19,8 @@ public class MemberDAO implements DAO<Member> {
             while (resultSet.next()) {
                 int coachId = resultSet.getInt("coach_id");
                 int memberId = resultSet.getInt("member_id");
-                String firstName = resultSet.getString("firstName");
-                String lastName = resultSet.getString("lastName");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
                 String gender = resultSet.getString("gender");
                 String phoneNumber = resultSet.getString("phone_num");
                 Member member = new Member(coachId, memberId, firstName, lastName, gender, phoneNumber);
