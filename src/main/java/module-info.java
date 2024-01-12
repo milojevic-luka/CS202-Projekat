@@ -11,10 +11,12 @@ module com.luka.main {
     requires java.sql;
     requires io.github.cdimascio.dotenv.java;
 
-//    opens com.luka.main to javafx.fxml;
-//    exports com.luka.main;
+
     opens application to javafx.fxml;
     exports application;
-    exports application.controllers;
     opens application.controllers to javafx.fxml;
+    exports application.controllers;
+    opens application.entities to javafx.fxml;
+    exports application.entities;
+
 }
