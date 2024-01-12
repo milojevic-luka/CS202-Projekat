@@ -29,9 +29,17 @@ public class SignUpController {
 
     @FXML
     private Button signUpButton;
+    @FXML
+    private Button backButton;
 
     @FXML
     private TextField usernameInput;
+
+    @FXML
+    void backToLogIn(ActionEvent event) throws IOException {
+        SwitchScene.change("Log in", "main-view.fxml", event);
+    }
+
 
     @FXML
     void signUp(ActionEvent event) throws IOException, SQLException {
@@ -65,7 +73,6 @@ public class SignUpController {
 
             SwitchScene.change("Log In", "main-view.fxml", event);
         }
-
 
     }
 }
