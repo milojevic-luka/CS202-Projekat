@@ -56,7 +56,7 @@ public class SignUpController {
             return;
         }
 
-        try (Connection connection = DatabaseConnection.connectToDb()) {
+        try (Connection connection = new DatabaseConnection().connectToDb()) {
             String sql = "INSERT INTO admin (username, email, password)" +
                     "VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);

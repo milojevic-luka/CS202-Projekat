@@ -49,7 +49,7 @@ public class MainController {
             return;
         }
 
-        try (Connection connection = DatabaseConnection.connectToDb()) {
+        try (Connection connection = new DatabaseConnection().connectToDb()) {
             String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, username);
