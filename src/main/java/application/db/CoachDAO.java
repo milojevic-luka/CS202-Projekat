@@ -50,8 +50,8 @@ public class CoachDAO implements DAO<Coach> {
     @Override
     public void update(Coach coach) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
-            String query = "UPDATE Coach" +
-                    "SET first_name = ?, last_name = ?, gender = ?, status = ?" +
+            String query = "UPDATE Coach " +
+                    "SET first_name = ?, last_name = ?, gender = ?, status = ? " +
                     "WHERE coach_id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
