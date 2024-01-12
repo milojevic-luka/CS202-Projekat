@@ -1,6 +1,10 @@
 package application.controllers;
 
 import application.MainApp;
+import application.ui.ErrorAlert;
+import application.ui.InfoAlert;
+import application.db.DatabaseConnection;
+import application.ui.SwitchScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class SignUpController {
     @FXML
@@ -27,15 +34,38 @@ public class SignUpController {
     private TextField usernameInput;
 
     @FXML
-    void signUp(ActionEvent event) throws IOException {
+    void signUp(ActionEvent event) throws IOException, SQLException {
 
-        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("main-view.fxml"));
+        String email = emailInput.getText();
+        String username = usernameInput.getText();
+        String password = passwordInput.getText();
+        if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
+            ErrorAlert.show("Empry fields", "Please fill in the blank fields");
+            return;
+        }
+        if (password.length() < 8) {
+            ErrorAlert.show("Password length", "Password must be at least 8 characters long");
+            return;
+        }
 
-        Parent root = loader.load();
-        Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        try (Connection connection = DatabaseConnection.connectToDb()) {
+            String sql = "INSERT INTO admin (username, email, password)" +
+                    "VALUES (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, email);
+            statement.setString(3, password);
+            statement.executeUpdate();
+
+            usernameInput.setText("");
+            emailInput.setText("");
+            passwordInput.setText("");
+
+            InfoAlert.show("Created new user", "Successfully created " + username + " user");
+
+            SwitchScene.change("Log In", "main-view.fxml", event);
+        }
+
 
     }
 }
