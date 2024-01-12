@@ -126,23 +126,41 @@ public class MemberController implements Initializable {
     }
 
     @FXML
-    void addMember(ActionEvent event) {
-
+    void addMember(ActionEvent event) throws SQLException {
+        new MemberDAO().insert(createMember());
+        populateMemberTable();
     }
 
     @FXML
-    void updateMember(ActionEvent event) {
-
+    void updateMember(ActionEvent event) throws SQLException {
+        new MemberDAO().update(createMember());
+        populateMemberTable();
     }
 
     @FXML
-    void deleteMember(ActionEvent event) {
-
+    void deleteMember(ActionEvent event) throws SQLException {
+        new MemberDAO().delete(createMember());
+        populateMemberTable();
     }
 
     @FXML
     void clearFields(ActionEvent event) {
+        memberIdInput.setText("");
+        coachIdInput.setText("");
+        firstNameInput.setText("");
+        lastNameInput.setText("");
+        phoneInput.setText("");
+    }
 
+    private Member createMember() {
+        int id = Integer.parseInt(memberIdInput.getText());
+        int coachId = Integer.parseInt(coachIdInput.getText());
+        String firstName = firstNameInput.getText();
+        String lastName = lastNameInput.getText();
+        String gender = genderComboBox.getValue();
+        String phoneNum = phoneInput.getText();
+
+        return new Member(coachId, id, firstName, lastName, gender, phoneNum);
     }
 
     private void populateComboBox() {
