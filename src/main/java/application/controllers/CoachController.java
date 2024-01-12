@@ -2,6 +2,7 @@ package application.controllers;
 
 import application.db.CoachDAO;
 import application.entities.Coach;
+import application.ui.ComboBoxPopulation;
 import application.ui.SwitchScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -91,8 +93,8 @@ public class CoachController implements Initializable {
     }
 
     @FXML
-    void switchToMembers(ActionEvent event) {
-
+    void switchToMembers(ActionEvent event) throws IOException {
+        SwitchScene.change("Members","member-view.fxml", event);
     }
 
     @FXML
@@ -159,10 +161,10 @@ public class CoachController implements Initializable {
         coachTableView.getItems().addAll(coaches);
     }
 
-    private void tableSelection(){
+    private void tableSelection() {
         coachTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
         {
-            if(newVal != null){
+            if (newVal != null) {
                 coachIdInput.setText(String.valueOf(newVal.getCoachId()));
                 firstNameInput.setText(newVal.getFirstName());
                 lastNameInput.setText(newVal.getLastName());
@@ -173,15 +175,9 @@ public class CoachController implements Initializable {
     }
 
     private void populateComboBox() {
-        // Gender
-        genderComboBox.getItems().add("Male");
-        genderComboBox.getItems().add("Female");
-        genderComboBox.setValue("Male");
-
-        //Status
-        statusComboBox.getItems().add("Active");
-        statusComboBox.getItems().add("Inactive");
-        statusComboBox.setValue("Active");
+        ComboBoxPopulation combo = new ComboBoxPopulation();
+        combo.populate(genderComboBox, Arrays.asList("Male", "Female"), "Male");
+        combo.populate(statusComboBox, Arrays.asList("Active","Inactive"), "Active");
     }
 
     @Override

@@ -56,8 +56,8 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    void switchToMembers(ActionEvent event) {
-
+    void switchToMembers(ActionEvent event) throws IOException {
+        SwitchScene.change("Members", "member-view.fxml", event);
     }
 
     @FXML
