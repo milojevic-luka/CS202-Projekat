@@ -8,6 +8,8 @@ module com.luka.main {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
+    requires java.sql;
+    requires io.github.cdimascio.dotenv.java;
 
 //    opens com.luka.main to javafx.fxml;
 //    exports com.luka.main;
