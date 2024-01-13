@@ -214,7 +214,15 @@ public class MembershipController implements Initializable {
     }
 
     private void updateSuggestedPrice() {
-        double suggestedPrice = calculateSuggestedPrice();
+        if (startDatePicker.getValue() == null ||
+                endDatePicker.getValue() == null ||
+                typeComboBox.getValue() == null)
+            return;
+
+        long numberOfDays = ChronoUnit.DAYS.between(startDatePicker.getValue(), endDatePicker.getValue());
+        Boolean isStudent = typeComboBox.getValue().equals("Student") ? true : false;
+
+        double suggestedPrice = calculateSuggestedPrice(numberOfDays, isStudent);
         suggestedPriceLabel.setText("Suggested Price: $" + suggestedPrice);
     }
 
@@ -224,16 +232,12 @@ public class MembershipController implements Initializable {
         typeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateSuggestedPrice());
     }
 
-    private double calculateSuggestedPrice() {
-        if (startDatePicker.getValue() == null ||
-                endDatePicker.getValue() == null ||
-                typeComboBox.getValue() == null)
-            return Double.NaN;
-        long numberOfDays = ChronoUnit.DAYS.between(startDatePicker.getValue(), endDatePicker.getValue());
-        Boolean isStudent = typeComboBox.getValue().equals("Student") ? true : false;
-        double suggestedPrice = numberOfDays * 2.5;
+    private double calculateSuggestedPrice(long numberOfDays, Boolean isStudent) {
+        final double PRICE_PER_DAY = 2.5;
+        final double STUDENT_DISCOUNT = 0.8;
+        double suggestedPrice = numberOfDays * PRICE_PER_DAY;
         if (isStudent)
-            suggestedPrice *= 0.8;
+            suggestedPrice *= STUDENT_DISCOUNT;
         return suggestedPrice;
     }
 
