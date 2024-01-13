@@ -164,8 +164,7 @@ public class MemberController implements Initializable {
     }
 
     private void populateComboBox() {
-        ComboBoxPopulation combo = new ComboBoxPopulation();
-        combo.populate(genderComboBox, Arrays.asList("Male", "Female"), "Male");
+        new ComboBoxPopulation().populate(genderComboBox, Arrays.asList("Male", "Female"), "Male");
     }
 
     private void tableSelection() {
