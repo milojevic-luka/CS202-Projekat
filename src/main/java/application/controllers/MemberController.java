@@ -5,6 +5,7 @@ import application.db.MemberDAO;
 import application.entities.Coach;
 import application.entities.Member;
 import application.ui.ComboBoxPopulation;
+import application.ui.ConfirmAlert;
 import application.ui.SwitchScene;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -102,7 +103,9 @@ public class MemberController implements Initializable {
 
     @FXML
     void logOut(ActionEvent event) throws IOException {
-        SwitchScene.change("Log in", "main-view.fxml", event);
+        boolean isConfirmed = ConfirmAlert.show("Confirmation message",
+                "Are you sure you want to log out?");
+        if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
 
     @FXML
