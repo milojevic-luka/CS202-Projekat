@@ -116,13 +116,13 @@ public class MemberController implements Initializable {
     }
 
     @FXML
-    void switchToMemberships(ActionEvent event) {
-
+    void switchToMemberships(ActionEvent event) throws IOException {
+        SwitchScene.change("Memberships", "membership-view.fxml", event);
     }
 
     @FXML
-    void switchToSupplements(ActionEvent event) {
-
+    void switchToSupplements(ActionEvent event) throws IOException {
+        SwitchScene.change("Supplements", "supplement-view.fxml", event);
     }
 
     @FXML
