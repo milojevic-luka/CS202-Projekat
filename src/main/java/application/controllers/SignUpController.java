@@ -70,7 +70,7 @@ public class SignUpController {
 
             SwitchScene.change("Log In", "main-view.fxml", event);
         } catch (Exception e) {
-            ErrorAlert.show(e.getCause().toString(), e.getMessage());
+            ErrorAlert.show("Error", e.getMessage());
         }
 
     }
