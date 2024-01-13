@@ -1,26 +1,15 @@
 package application.controllers;
 
-import application.MainApp;
 import application.db.AdminDAO;
 import application.entities.Admin;
-import application.ui.ErrorAlert;
-import application.ui.InfoAlert;
-import application.db.DatabaseConnection;
+import application.ui.AlertUtil;
 import application.ui.SwitchScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public class SignUpController {
     @FXML
@@ -51,11 +40,11 @@ public class SignUpController {
         String password = passwordInput.getText();
 
         if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            ErrorAlert.show("Empry fields", "Please fill in the blank fields");
+            AlertUtil.showError("Empry fields", "Please fill in the blank fields");
             return;
         }
         if (password.length() < 8) {
-            ErrorAlert.show("Password length", "Password must be at least 8 characters long");
+            AlertUtil.showError("Password length", "Password must be at least 8 characters long");
             return;
         }
 
@@ -66,11 +55,11 @@ public class SignUpController {
             emailInput.setText("");
             passwordInput.setText("");
 
-            InfoAlert.show("Created new user", "Successfully created " + username + " user");
+            AlertUtil.showInfo("Created new user", "Successfully created " + username + " user");
 
             SwitchScene.change("Log In", "main-view.fxml", event);
         } catch (Exception e) {
-            ErrorAlert.show("Error", e.getMessage());
+            AlertUtil.showError("Error", e.getMessage());
         }
 
     }

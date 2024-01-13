@@ -1,19 +1,14 @@
 package application.controllers;
 
-import application.MainApp;
 import application.db.AdminDAO;
 import application.db.DatabaseConnection;
 import application.entities.Admin;
-import application.ui.ErrorAlert;
-import application.ui.InfoAlert;
+import application.ui.AlertUtil;
 import application.ui.SwitchScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -21,8 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MainController {
@@ -47,7 +40,7 @@ public class MainController {
         String password = passwordInput.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-            ErrorAlert.show("Empty Fields", "Please fill all the blank fields");
+            AlertUtil.showError("Empty Fields", "Please fill all the blank fields");
             return;
         }
 
@@ -55,13 +48,13 @@ public class MainController {
             Admin adminCredentials = new Admin(username, password);
             Boolean isLogged = new AdminDAO().checkCredentials(adminCredentials);
             if (isLogged) {
-                InfoAlert.show("Login Message", "Successful login");
+                AlertUtil.showInfo("Login Message", "Successful login");
 
                 logInButton.getScene().getWindow().hide();
 
                 SwitchScene.change("Dashboard", "dashboard-view.fxml", event);
             } else {
-                ErrorAlert.show("Error Message", "Wrong Username/Password");
+                AlertUtil.showError("Error Message", "Wrong Username/Password");
             }
         } catch (Exception e) {
             e.printStackTrace();

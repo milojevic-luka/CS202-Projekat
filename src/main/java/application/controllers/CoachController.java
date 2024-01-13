@@ -2,8 +2,8 @@ package application.controllers;
 
 import application.db.CoachDAO;
 import application.entities.Coach;
+import application.ui.AlertUtil;
 import application.ui.ComboBoxPopulation;
-import application.ui.ConfirmAlert;
 import application.ui.SwitchScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -85,7 +85,7 @@ public class CoachController implements Initializable {
 
     @FXML
     void logOut(ActionEvent event) throws IOException {
-        boolean isConfirmed = ConfirmAlert.show("Confirmation message",
+        boolean isConfirmed =  AlertUtil.showConfirm("Confirmation message",
                 "Are you sure you want to log out?");
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
