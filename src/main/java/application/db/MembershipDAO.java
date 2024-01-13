@@ -13,18 +13,20 @@ public class MembershipDAO implements DAO<Membership> {
     public List getAll() throws SQLException {
         List<Membership> memberships = new ArrayList<>();
         try (Connection connection = new DatabaseConnection().connectToDb()) {
-            String query = "SELECT * FROM membership";
+            String query = "SELECT m.*, CONCAT(first_name, ' ', last_name) AS full_name FROM membership m " +
+                    "JOIN member mb ON m.member_id = mb.member_id";
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(query);
             while (result.next()) {
                 int membershipId = result.getInt("membership_id");
                 int memberId = result.getInt("member_id");
+                String memberFullName = result.getString("full_name");
                 Date startDate = result.getDate("start_date");
                 Date endDate = result.getDate("end_date");
                 String type = result.getString("type");
                 Double price = result.getDouble("price");
 
-                Membership membership = new Membership(membershipId, memberId, startDate, endDate, type, price);
+                Membership membership = new Membership(membershipId, memberId, memberFullName,startDate, endDate, type, price);
                 memberships.add(membership);
             }
         }
