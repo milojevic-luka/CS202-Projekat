@@ -1,6 +1,8 @@
 package application.controllers;
 
 import application.MainApp;
+import application.db.AdminDAO;
+import application.entities.Admin;
 import application.ui.ErrorAlert;
 import application.ui.InfoAlert;
 import application.db.DatabaseConnection;
@@ -42,11 +44,12 @@ public class SignUpController {
 
 
     @FXML
-    void signUp(ActionEvent event) throws IOException, SQLException {
+    void signUp(ActionEvent event) {
 
         String email = emailInput.getText();
         String username = usernameInput.getText();
         String password = passwordInput.getText();
+
         if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
             ErrorAlert.show("Empry fields", "Please fill in the blank fields");
             return;
@@ -56,14 +59,8 @@ public class SignUpController {
             return;
         }
 
-        try (Connection connection = new DatabaseConnection().connectToDb()) {
-            String sql = "INSERT INTO admin (username, email, password)" +
-                    "VALUES (?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, email);
-            statement.setString(3, password);
-            statement.executeUpdate();
+        try {
+            new AdminDAO().insert(new Admin(username, email, password));
 
             usernameInput.setText("");
             emailInput.setText("");
@@ -72,6 +69,8 @@ public class SignUpController {
             InfoAlert.show("Created new user", "Successfully created " + username + " user");
 
             SwitchScene.change("Log In", "main-view.fxml", event);
+        } catch (Exception e) {
+            ErrorAlert.show(e.getCause().toString(), e.getMessage());
         }
 
     }

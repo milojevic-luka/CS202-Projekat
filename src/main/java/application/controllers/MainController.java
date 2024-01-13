@@ -1,7 +1,9 @@
 package application.controllers;
 
 import application.MainApp;
+import application.db.AdminDAO;
 import application.db.DatabaseConnection;
+import application.entities.Admin;
 import application.ui.ErrorAlert;
 import application.ui.InfoAlert;
 import application.ui.SwitchScene;
@@ -50,24 +52,14 @@ public class MainController {
         }
 
         try (Connection connection = new DatabaseConnection().connectToDb()) {
-            String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
-            Alert alert;
-            if (resultSet.next()) {
+            Admin adminCredentials = new Admin(username, password);
+            Boolean isLogged = new AdminDAO().checkCredentials(adminCredentials);
+            if (isLogged) {
                 InfoAlert.show("Login Message", "Successful login");
 
                 logInButton.getScene().getWindow().hide();
 
-                Parent root = FXMLLoader.load(MainApp.class.getResource("dashboard-view.fxml"));
-
-                Stage stage = new Stage();
-                Scene scene = new Scene(root);
-                stage.setTitle("Dashboard");
-                stage.setScene(scene);
-                stage.show();
+                SwitchScene.change("Dashboard", "dashboard-view.fxml", event);
             } else {
                 ErrorAlert.show("Error Message", "Wrong Username/Password");
             }
