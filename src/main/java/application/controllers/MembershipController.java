@@ -1,7 +1,10 @@
 package application.controllers;
 
+import application.db.MemberDAO;
+import application.db.MembershipDAO;
 import application.entities.Member;
 import application.entities.Membership;
+import application.ui.ComboBoxPopulation;
 import application.ui.SwitchScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,11 +16,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 public class MembershipController implements Initializable {
     @FXML
@@ -135,9 +141,48 @@ public class MembershipController implements Initializable {
 
     }
 
+    private void tableSelection() {
+        membershipTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
+        {
+            if (newVal != null) {
+                membershipIdInput.setText(String.valueOf(newVal.getMembershipId()));
+                memberIdInput.setText(String.valueOf(newVal.getMemberId()));
+                startDatePicker.setValue(LocalDate.parse(String.valueOf(newVal.getStartDate())));
+                endDatePicker.setValue(LocalDate.parse(String.valueOf(newVal.getEndDate())));
+                typeComboBox.setValue(newVal.getType());
+                priceInput.setText(String.valueOf(newVal.getPrice()));
+            }
+        });
+    }
+
+    private void populateTable() throws SQLException {
+        membershipTableView.getItems().clear();
+
+        List<Membership> memberships = new MembershipDAO().getAll();
+
+        membershipIdColumn.setCellValueFactory(new PropertyValueFactory<>("membershipId"));
+        memberNameColumn.setCellValueFactory(new PropertyValueFactory<>("memberId"));
+        startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        membershipTableView.getItems().addAll(memberships);
+    }
+
+    private void populateComboBox() {
+        new ComboBoxPopulation().populate(typeComboBox, Arrays.asList("Regular", "Student"), "Male");
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        try {
+            populateComboBox();
+            populateTable();
+            tableSelection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
