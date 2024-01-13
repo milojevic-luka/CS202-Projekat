@@ -1,11 +1,8 @@
 package application.controllers;
 
-import application.db.MemberDAO;
 import application.db.MembershipDAO;
-import application.entities.Member;
 import application.entities.Membership;
-import application.ui.ComboBoxPopulation;
-import application.ui.SwitchScene;
+import application.ui.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,8 +18,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class MembershipController implements Initializable {
@@ -95,10 +93,13 @@ public class MembershipController implements Initializable {
     @FXML
     private Button updateMembershipButton;
 
+    private List<TextField> allFields;
 
     @FXML
     void logOut(ActionEvent event) throws IOException {
-        SwitchScene.change("Log in", "main-view.fxml", event);
+        boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
+                "Are you sure you want to log out?");
+        if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
 
     @FXML
@@ -121,24 +122,60 @@ public class MembershipController implements Initializable {
         SwitchScene.change("Supplements", "supplement-view.fxml", event);
     }
 
-    @FXML
-    void addMembership(ActionEvent event) {
+    private Membership createMembership() {
+        if (!CheckFields.areFieldsFilled(allFields))
+            AlertUtil.showError("Empty fields", "Please fill all the fields");
 
+        try {
+            int membershipId = Integer.parseInt(membershipIdInput.getText());
+            int memberId = Integer.parseInt(memberIdInput.getText());
+            Date startDate = java.sql.Date.valueOf(startDatePicker.getValue());
+            Date endDate = java.sql.Date.valueOf(endDatePicker.getValue());
+            String type = typeComboBox.getValue();
+            double price = Double.parseDouble(priceInput.getText());
+            return new Membership(membershipId, memberId, startDate, endDate, type, price);
+        } catch (NumberFormatException e) {
+            AlertUtil.showError("Input error", "Please enter valid values");
+        } catch (Exception e) {
+            AlertUtil.showError("Error", e.getMessage());
+        }
+        return null;
     }
 
     @FXML
-    void updateMembership(ActionEvent event) {
-
+    void addMembership(ActionEvent event) throws SQLException {
+        Membership membership = createMembership();
+        if (membership != null) {
+            try {
+                new MembershipDAO().insert(membership);
+            } catch (SQLIntegrityConstraintViolationException e) {
+                AlertUtil.showError("Duplicate entry", "Membership with ID " + membership.getMembershipId() + " already exists");
+            }
+            populateTable();
+        }
     }
 
     @FXML
-    void deleteMembership(ActionEvent event) {
-
+    void updateMembership(ActionEvent event) throws SQLException {
+        Membership membership = createMembership();
+        if (membership != null) {
+            new MembershipDAO().update(membership);
+            populateTable();
+        }
     }
 
     @FXML
-    void clearFields(ActionEvent event) {
+    void deleteMembership(ActionEvent event) throws SQLException {
+        Membership membership = createMembership();
+        if (membership != null) {
+            new MembershipDAO().delete(membership);
+            populateTable();
+        }
+    }
 
+    @FXML
+    void clearFields() {
+        CheckFields.clearFields(allFields);
     }
 
     private void tableSelection() {
@@ -161,23 +198,50 @@ public class MembershipController implements Initializable {
         List<Membership> memberships = new MembershipDAO().getAll();
 
         membershipIdColumn.setCellValueFactory(new PropertyValueFactory<>("membershipId"));
-        memberNameColumn.setCellValueFactory(new PropertyValueFactory<>("memberId"));
+        memberNameColumn.setCellValueFactory(new PropertyValueFactory<>("memberFullName"));
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         membershipTableView.getItems().addAll(memberships);
+
+        clearFields();
     }
 
     private void populateComboBox() {
-        new ComboBoxPopulation().populate(typeComboBox, Arrays.asList("Regular", "Student"), "Male");
+        new ComboBoxPopulation().populate(typeComboBox, Arrays.asList("Regular", "Student"), "Regular");
     }
 
+    private void updateSuggestedPrice() {
+        double suggestedPrice = calculateSuggestedPrice();
+        suggestedPriceLabel.setText("Suggested Price: $" + suggestedPrice);
+    }
+
+    private void suggestPriceOnChange() {
+        startDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> updateSuggestedPrice());
+        endDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> updateSuggestedPrice());
+        typeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateSuggestedPrice());
+    }
+
+    private double calculateSuggestedPrice() {
+        if (startDatePicker.getValue() == null ||
+                endDatePicker.getValue() == null ||
+                typeComboBox.getValue() == null)
+            return Double.NaN;
+        long numberOfDays = ChronoUnit.DAYS.between(startDatePicker.getValue(), endDatePicker.getValue());
+        Boolean isStudent = typeComboBox.getValue().equals("Student") ? true : false;
+        double suggestedPrice = numberOfDays * 2.5;
+        if (isStudent)
+            suggestedPrice *= 0.8;
+        return suggestedPrice;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            allFields = CheckFields.getFields(memberIdInput, membershipIdInput, priceInput);
+            suggestPriceOnChange();
             populateComboBox();
             populateTable();
             tableSelection();
