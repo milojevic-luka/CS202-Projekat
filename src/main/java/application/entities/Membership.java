@@ -5,6 +5,7 @@ import java.util.Date;
 public class Membership {
     private int membershipId;
     private int memberId;
+    private String memberFullName;
     private Date startDate;
     private Date endDate;
     private String type;
@@ -17,6 +18,16 @@ public class Membership {
     public Membership(int membershipId, int memberId, Date startDate, Date endDate, String type, double price) {
         this.membershipId = membershipId;
         this.memberId = memberId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.type = type;
+        this.price = price;
+    }
+
+    public Membership(int membershipId, int memberId, String memberFullName, Date startDate, Date endDate, String type, double price) {
+        this.membershipId = membershipId;
+        this.memberId = memberId;
+        this.memberFullName = memberFullName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.type = type;
@@ -69,6 +80,14 @@ public class Membership {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getMemberFullName() {
+        return memberFullName;
+    }
+
+    public void setMemberFullName(String memberFullName) {
+        this.memberFullName = memberFullName;
     }
 
     @Override
