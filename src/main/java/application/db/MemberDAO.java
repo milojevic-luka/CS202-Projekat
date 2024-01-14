@@ -1,6 +1,7 @@
 package application.db;
 
 import application.entities.Member;
+import application.exceptions.MemberNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -59,7 +60,9 @@ public class MemberDAO implements DAO<Member> {
             statement.setString(4, member.getGender());
             statement.setString(5, member.getPhoneNum());
             statement.setString(6, String.valueOf(member.getMemberId()));
-            statement.executeUpdate();
+
+            int rowsAffected = statement.executeUpdate();
+            if(rowsAffected != 1) throw new MemberNotFoundException("Member with ID " + member.getMemberId() + " doesn't exist");
         }
     }
 
@@ -69,7 +72,9 @@ public class MemberDAO implements DAO<Member> {
             String query = "DELETE FROM member WHERE member_id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, String.valueOf(member.getMemberId()));
-            statement.executeUpdate();
+
+            int rowsAffected = statement.executeUpdate();
+            if(rowsAffected != 1) throw new MemberNotFoundException("Member with ID " + member.getMemberId() + " doesn't exist");
         }
     }
 }

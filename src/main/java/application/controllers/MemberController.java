@@ -2,9 +2,12 @@ package application.controllers;
 
 import application.db.CoachDAO;
 import application.db.MemberDAO;
+import application.db.MembershipDAO;
 import application.entities.Coach;
 import application.entities.Member;
+import application.exceptions.MemberNotFoundException;
 import application.ui.AlertUtil;
+import application.ui.CheckFields;
 import application.ui.ComboBoxPopulation;
 import application.ui.SwitchScene;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,10 +20,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -100,10 +105,11 @@ public class MemberController implements Initializable {
 
     @FXML
     private Button updateMemberButton;
+    private List<TextField> allFields;
 
     @FXML
     void logOut(ActionEvent event) throws IOException {
-        boolean isConfirmed =  AlertUtil.showConfirm("Confirmation message",
+        boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
                 "Are you sure you want to log out?");
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
@@ -130,45 +136,78 @@ public class MemberController implements Initializable {
 
     @FXML
     void addMember(ActionEvent event) throws SQLException {
-        new MemberDAO().insert(createMember());
-        populateMemberTable();
+        Member member = createMember();
+        if (member != null) {
+            try {
+                new MemberDAO().insert(member);
+                populateMemberTable();
+            } catch (SQLIntegrityConstraintViolationException e) {
+                AlertUtil.showError("Insert error", e.getSQLState());
+            }
+        }
     }
 
     @FXML
     void updateMember(ActionEvent event) throws SQLException {
-        new MemberDAO().update(createMember());
-        populateMemberTable();
+        Member member = createMember();
+        if (member != null) {
+            try {
+                new MemberDAO().update(member);
+                AlertUtil.showInfo("Successful update", "You have updated member with ID " + member.getMemberId());
+                populateMemberTable();
+            } catch (SQLIntegrityConstraintViolationException e) {
+                AlertUtil.showError("No coach", "Coach with ID " + member.getCoachId() + " doesn't exist");
+            } catch (MemberNotFoundException e) {
+                AlertUtil.showError("No such member", e.getMessage());
+            }
+        }
     }
 
     @FXML
     void deleteMember(ActionEvent event) throws SQLException {
-        new MemberDAO().delete(createMember());
-        populateMemberTable();
+        Member member = createMember();
+        if (member != null) {
+            try {
+                new MemberDAO().delete(member);
+                AlertUtil.showInfo("Successful deletion", "You have delete " + member.getFirstName() + " " + member.getLastName());
+                populateMemberTable();
+            } catch (MemberNotFoundException e) {
+                AlertUtil.showError("No such user", e.getMessage());
+            }
+        }
     }
 
     @FXML
     void clearFields(ActionEvent event) {
-        memberIdInput.setText("");
-        coachIdInput.setText("");
-        firstNameInput.setText("");
-        lastNameInput.setText("");
-        phoneInput.setText("");
+        CheckFields.clearFields(allFields);
     }
 
-    private Member createMember() {
-        int id = Integer.parseInt(memberIdInput.getText());
-        int coachId = Integer.parseInt(coachIdInput.getText());
-        String firstName = firstNameInput.getText();
-        String lastName = lastNameInput.getText();
-        String gender = genderComboBox.getValue();
-        String phoneNum = phoneInput.getText();
 
-        return new Member(coachId, id, firstName, lastName, gender, phoneNum);
+    private Member createMember() {
+        if (!CheckFields.areFieldsFilled(allFields))
+            AlertUtil.showError("Empty fields", "Please fill all the fields");
+
+        try {
+            int id = Integer.parseInt(memberIdInput.getText());
+            int coachId = Integer.parseInt(coachIdInput.getText());
+            String firstName = firstNameInput.getText();
+            String lastName = lastNameInput.getText();
+            String gender = genderComboBox.getValue();
+            String phoneNum = phoneInput.getText();
+
+            return new Member(coachId, id, firstName, lastName, gender, phoneNum);
+        } catch (NumberFormatException e) {
+            AlertUtil.showError("Input error", "Please enter valid values");
+        } catch (Exception e) {
+            AlertUtil.showError("Error", e.getMessage());
+        }
+        return null;
     }
 
     private void populateComboBox() {
         new ComboBoxPopulation().populate(genderComboBox, Arrays.asList("Male", "Female"), "Male");
     }
+
 
     private void tableSelection() {
         memberTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
@@ -212,12 +251,14 @@ public class MemberController implements Initializable {
         coachIdColumn.setCellValueFactory(new PropertyValueFactory<>("coachId"));
         coachName.setCellValueFactory(data -> new SimpleStringProperty(
                 data.getValue().getFirstName() + " " + data.getValue().getLastName()));
+
         coachTableView.getItems().addAll(coaches);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            allFields = CheckFields.getFields(coachIdInput, memberIdInput, firstNameInput, lastNameInput, phoneInput);
             populateComboBox();
             populateMemberTable();
             populateCoachTable();
