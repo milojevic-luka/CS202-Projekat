@@ -148,10 +148,10 @@ public class MembershipController implements Initializable {
         if (membership != null) {
             try {
                 new MembershipDAO().insert(membership);
+                populateTable();
             } catch (SQLIntegrityConstraintViolationException e) {
                 AlertUtil.showError("Duplicate entry", "Membership with ID " + membership.getMembershipId() + " already exists");
             }
-            populateTable();
         }
     }
 
