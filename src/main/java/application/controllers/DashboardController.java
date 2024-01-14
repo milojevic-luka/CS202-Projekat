@@ -44,7 +44,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     void logOut(ActionEvent event) throws IOException {
-        boolean isConfirmed =  AlertUtil.showConfirm("Confirmation message",
+        boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
                 "Are you sure you want to log out?");
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
@@ -87,7 +87,7 @@ public class DashboardController implements Initializable {
                 totalActiveMembershipsLabel.setText(totalActiveMembershipsLabel.getText() + membershipCount);
                 totalCoachesLabel.setText(totalCoachesLabel.getText() + coachCount);
                 totalMembersLabel.setText(totalMembersLabel.getText() + memberCount);
-                totalRevenuLabel.setText(totalRevenuLabel.getText() + totalRevenue + "$");
+                totalRevenuLabel.setText(totalRevenuLabel.getText() + String.format("%.2f", totalRevenue) + "$");
             }
 
         } catch (SQLException e) {
