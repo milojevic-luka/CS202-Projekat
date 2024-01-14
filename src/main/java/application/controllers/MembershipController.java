@@ -2,6 +2,8 @@ package application.controllers;
 
 import application.db.MembershipDAO;
 import application.entities.Membership;
+import application.exceptions.MemberNotFoundException;
+import application.exceptions.MembershipNotFoundException;
 import application.ui.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -150,7 +152,7 @@ public class MembershipController implements Initializable {
                 new MembershipDAO().insert(membership);
                 populateTable();
             } catch (SQLIntegrityConstraintViolationException e) {
-                AlertUtil.showError("Duplicate entry", "Membership with ID " + membership.getMembershipId() + " already exists");
+                AlertUtil.showError("Insert error", e.getMessage());
             }
         }
     }
@@ -159,8 +161,17 @@ public class MembershipController implements Initializable {
     void updateMembership(ActionEvent event) throws SQLException {
         Membership membership = createMembership();
         if (membership != null) {
-            new MembershipDAO().update(membership);
-            populateTable();
+            try {
+                new MembershipDAO().update(membership);
+                AlertUtil.showInfo("Successful update", "You have successfully updated membership with ID "
+                        + membership.getMembershipId());
+                populateTable();
+            } catch (SQLIntegrityConstraintViolationException e) {
+                AlertUtil.showError("No member", "Member with ID "
+                        + membership.getMemberId() + " doesn't exist");
+            } catch (MembershipNotFoundException e) {
+                AlertUtil.showError("No such membership", e.getMessage());
+            }
         }
     }
 
@@ -168,8 +179,14 @@ public class MembershipController implements Initializable {
     void deleteMembership(ActionEvent event) throws SQLException {
         Membership membership = createMembership();
         if (membership != null) {
-            new MembershipDAO().delete(membership);
-            populateTable();
+            try {
+                new MembershipDAO().delete(membership);
+                AlertUtil.showInfo("Successful deletion", "You have successfully delete membership with ID"
+                        + membership.getMembershipId());
+                populateTable();
+            }catch (MembershipNotFoundException e) {
+                AlertUtil.showError("No such membership", e.getMessage());
+            }
         }
     }
 

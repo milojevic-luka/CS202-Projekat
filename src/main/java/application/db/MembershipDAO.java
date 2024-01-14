@@ -1,6 +1,7 @@
 package application.db;
 
 import application.entities.Membership;
+import application.exceptions.MembershipNotFoundException;
 
 import java.sql.*;
 import java.util.Date;
@@ -26,7 +27,7 @@ public class MembershipDAO implements DAO<Membership> {
                 String type = result.getString("type");
                 Double price = result.getDouble("price");
 
-                Membership membership = new Membership(membershipId, memberId, memberFullName,startDate, endDate, type, price);
+                Membership membership = new Membership(membershipId, memberId, memberFullName, startDate, endDate, type, price);
                 memberships.add(membership);
             }
         }
@@ -80,7 +81,9 @@ public class MembershipDAO implements DAO<Membership> {
             statement.setDouble(5, membership.getPrice());
             statement.setInt(6, membership.getMembershipId());
 
-            statement.executeUpdate();
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected != 1) throw new MembershipNotFoundException("Membership with ID " +
+                    membership.getMembershipId() + " doesn't exist");
         }
     }
 
@@ -90,7 +93,10 @@ public class MembershipDAO implements DAO<Membership> {
             String query = "DELETE FROM membership WHERE membership_id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, membership.getMembershipId());
-            statement.executeUpdate();
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected != 1) throw new MembershipNotFoundException("Membership with ID " +
+                    membership.getMembershipId() + " doesn't exist");
+
         }
     }
 
