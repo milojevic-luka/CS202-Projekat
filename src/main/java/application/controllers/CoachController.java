@@ -1,8 +1,13 @@
 package application.controllers;
 
 import application.db.CoachDAO;
+import application.db.MembershipDAO;
 import application.entities.Coach;
+import application.entities.Membership;
+import application.exceptions.CoachNotFoundException;
+import application.exceptions.MembershipNotFoundException;
 import application.ui.AlertUtil;
+import application.ui.CheckFields;
 import application.ui.ComboBoxPopulation;
 import application.ui.SwitchScene;
 import javafx.event.ActionEvent;
@@ -18,6 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -83,9 +89,11 @@ public class CoachController implements Initializable {
     @FXML
     private Button updateCoach;
 
+    private List<TextField> allFields;
+
     @FXML
     void logOut(ActionEvent event) throws IOException {
-        boolean isConfirmed =  AlertUtil.showConfirm("Confirmation message",
+        boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
                 "Are you sure you want to log out?");
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
@@ -97,7 +105,7 @@ public class CoachController implements Initializable {
 
     @FXML
     void switchToMembers(ActionEvent event) throws IOException {
-        SwitchScene.change("Members","member-view.fxml", event);
+        SwitchScene.change("Members", "member-view.fxml", event);
     }
 
     @FXML
@@ -113,41 +121,67 @@ public class CoachController implements Initializable {
     @FXML
     public void addCoach(ActionEvent actionEvent) throws SQLException {
         Coach coach = createCoach();
-        CoachDAO dao = new CoachDAO();
-        dao.insert(coach);
-        populateTable();
+        if (coach != null) {
+            try {
+                new CoachDAO().insert(coach);
+                populateTable();
+            } catch (SQLIntegrityConstraintViolationException e) {
+                AlertUtil.showError("Insert error", e.getMessage());
+            }
+        }
     }
 
     @FXML
     public void updateCoach(ActionEvent actionEvent) throws SQLException {
         Coach coach = createCoach();
-        CoachDAO dao = new CoachDAO();
-        dao.update(coach);
-        populateTable();
+        if (coach != null) {
+            try {
+                new CoachDAO().update(coach);
+                AlertUtil.showInfo("Successful update", "You have successfully updated coach with ID "
+                        + coach.getCoachId());
+                populateTable();
+            } catch (CoachNotFoundException e) {
+                AlertUtil.showError("No such coach", e.getMessage());
+            }
+        }
     }
 
     @FXML
     public void deleteCoach(ActionEvent actionEvent) throws SQLException {
         Coach coach = createCoach();
-        CoachDAO dao = new CoachDAO();
-        dao.delete(coach);
-        populateTable();
+        if (coach != null) {
+            try {
+                new CoachDAO().delete(coach);
+                AlertUtil.showInfo("Successful update", "You have successfully updated coach with ID "
+                        + coach.getCoachId());
+                populateTable();
+            } catch (CoachNotFoundException e) {
+                AlertUtil.showError("No such coach", e.getMessage());
+            }
+        }
     }
 
     @FXML
     public void clearFields(ActionEvent actionEvent) {
-        coachIdInput.setText("");
-        firstNameInput.setText("");
-        lastNameInput.setText("");
+        CheckFields.clearFields(allFields);
     }
 
     private Coach createCoach() {
-        String coachId = coachIdInput.getText();
-        String firstName = firstNameInput.getText();
-        String lastName = lastNameInput.getText();
-        String gender = genderComboBox.getValue();
-        String status = statusComboBox.getValue();
-        return new Coach(Integer.parseInt(coachId), firstName, lastName, gender, status);
+        if (!CheckFields.areFieldsFilled(allFields))
+            AlertUtil.showError("Empty fields", "Please fill all the fields");
+        try {
+            String coachId = coachIdInput.getText();
+            String firstName = firstNameInput.getText();
+            String lastName = lastNameInput.getText();
+            String gender = genderComboBox.getValue();
+            String status = statusComboBox.getValue();
+            return new Coach(Integer.parseInt(coachId), firstName, lastName, gender, status);
+        } catch (NumberFormatException e) {
+            AlertUtil.showError("Input error", "Please enter valid values");
+        } catch (Exception e) {
+            AlertUtil.showError("Error", e.getMessage());
+        }
+        return null;
     }
 
     private void populateTable() throws SQLException {
@@ -180,12 +214,13 @@ public class CoachController implements Initializable {
     private void populateComboBox() {
         ComboBoxPopulation combo = new ComboBoxPopulation();
         combo.populate(genderComboBox, Arrays.asList("Male", "Female"), "Male");
-        combo.populate(statusComboBox, Arrays.asList("Active","Inactive"), "Active");
+        combo.populate(statusComboBox, Arrays.asList("Active", "Inactive"), "Active");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            allFields = CheckFields.getFields(coachIdInput, firstNameInput, lastNameInput);
             populateComboBox();
             populateTable();
             tableSelection();

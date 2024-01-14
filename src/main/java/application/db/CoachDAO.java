@@ -1,6 +1,7 @@
 package application.db;
 
 import application.entities.Coach;
+import application.exceptions.CoachNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -59,7 +60,10 @@ public class CoachDAO implements DAO<Coach> {
             statement.setString(3, coach.getGender());
             statement.setString(4, coach.getStatus());
             statement.setString(5, String.valueOf(coach.getCoachId()));
-            statement.executeUpdate();
+
+            int rowsAffected = statement.executeUpdate();
+            if(rowsAffected != 1) throw new CoachNotFoundException("Coach with ID " +
+                    coach.getCoachId() + " doesn't exist");
         }
     }
 
@@ -70,7 +74,10 @@ public class CoachDAO implements DAO<Coach> {
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, String.valueOf(coach.getCoachId()));
-            statement.executeUpdate();
+
+            int rowsAffected = statement.executeUpdate();
+            if(rowsAffected != 1) throw new CoachNotFoundException("Coach with ID " +
+                    coach.getCoachId() + " doesn't exist");
         }
     }
 }
