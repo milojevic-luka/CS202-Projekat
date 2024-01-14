@@ -10,7 +10,8 @@ module com.luka.main {
     requires com.almasb.fxgl.all;
     requires java.sql;
     requires io.github.cdimascio.dotenv.java;
-
+    requires org.jsoup;
+    requires java.desktop;
 
     opens application to javafx.fxml;
     exports application;
