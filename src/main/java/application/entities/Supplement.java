@@ -1,11 +1,25 @@
 package application.entities;
 
+/**
+ * Entity class representing a supplement product being scraped from a website.
+ * This class includes a parameterized constructor to initialize the supplement attributes.
+ * Also contains Getter, Setter and toString methods
+ */
+
 public class Supplement {
     private String imageUrl;
     private String supplementName;
     private String price;
     private String supplementUrl;
 
+    /**
+     * Parameterized constructor for the Supplement class.
+     *
+     * @param imageUrl       The URL of the supplement's image.
+     * @param supplementName The name of the supplement.
+     * @param price          The price of the supplement.
+     * @param supplementUrl  The URL of the supplement's details.
+     */
     public Supplement(String imageUrl, String supplementName, String price, String supplementUrl) {
         this.imageUrl = imageUrl;
         this.supplementName = supplementName;

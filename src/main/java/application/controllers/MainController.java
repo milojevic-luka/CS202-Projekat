@@ -34,6 +34,13 @@ public class MainController {
     private Scene scene;
     private Parent root;
 
+    /**
+     * Logs in the user using provided credentials and switches to the dashboard view if successful.
+     * Shows an error message if the login fails.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     @FXML
     void logIn(ActionEvent event) throws SQLException {
         String username = usernameInput.getText();
@@ -61,9 +68,16 @@ public class MainController {
         }
     }
 
+    /**
+     * Switches to the sign-up view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the switch of the scene.
+     */
     @FXML
     void switchToSignUp(ActionEvent event) throws IOException {
         SwitchScene.change("Sign Up", "sign-up-view.fxml", event);
     }
+
 
 }

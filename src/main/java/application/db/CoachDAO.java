@@ -7,9 +7,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) implementation for handling Coach entities in the database.
+ */
 public class CoachDAO implements DAO<Coach> {
 
-
+    /**
+     * Retrieves a list of all coaches from the database.
+     *
+     * @return A list containing all coaches.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public List<Coach> getAll() throws SQLException {
         ArrayList<Coach> coaches = new ArrayList<>();
@@ -31,6 +39,12 @@ public class CoachDAO implements DAO<Coach> {
         return coaches;
     }
 
+    /**
+     * Inserts a new coach into the database.
+     *
+     * @param coach The coach to be inserted.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public void insert(Coach coach) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -47,6 +61,13 @@ public class CoachDAO implements DAO<Coach> {
         }
     }
 
+    /**
+     * Updates an existing coach in the database.
+     *
+     * @param coach The coach to be updated.
+     * @throws SQLException If an error occurs during database access.
+     * @throws CoachNotFoundException If the specified coach doesn't exist in the database.
+     */
     @Override
     public void update(Coach coach) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -67,6 +88,13 @@ public class CoachDAO implements DAO<Coach> {
         }
     }
 
+    /**
+     * Deletes a coach from the database.
+     *
+     * @param coach The coach to be deleted.
+     * @throws SQLException If an error occurs during database access.
+     * @throws CoachNotFoundException If the specified coach doesn't exist in the database.
+     */
     @Override
     public void delete(Coach coach) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {

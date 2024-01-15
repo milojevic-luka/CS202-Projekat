@@ -1,7 +1,11 @@
 package application.entities;
 
 import java.util.Date;
-
+/**
+ * Entity class representing a membership.
+ * This class includes a parameterized constructor to initialize the membership attributes.
+ * Also contains Getter, Setter and toString methods
+ */
 public class Membership {
     private int membershipId;
     private int memberId;
@@ -11,10 +15,22 @@ public class Membership {
     private String type;
     private double price;
 
+    /**
+     * Default constructor for the Membership class.
+     */
     public Membership() {
-        // Empty constructor
     }
 
+    /**
+     * Parameterized constructor for the Membership class with essential fields.
+     *
+     * @param membershipId The unique identifier of the membership.
+     * @param memberId     The unique identifier of the member associated with the membership.
+     * @param startDate    The start date of the membership.
+     * @param endDate      The end date of the membership.
+     * @param type         The type of the membership.
+     * @param price        The price of the membership.
+     */
     public Membership(int membershipId, int memberId, Date startDate, Date endDate, String type, double price) {
         this.membershipId = membershipId;
         this.memberId = memberId;
@@ -24,6 +40,17 @@ public class Membership {
         this.price = price;
     }
 
+    /**
+     * Parameterized constructor for the Membership class with additional memberFullName field.
+     *
+     * @param membershipId   The unique identifier of the membership.
+     * @param memberId       The unique identifier of the member associated with the membership.
+     * @param memberFullName The full name of the member associated with the membership.
+     * @param startDate      The start date of the membership.
+     * @param endDate        The end date of the membership.
+     * @param type           The type of the membership.
+     * @param price          The price of the membership.
+     */
     public Membership(int membershipId, int memberId, String memberFullName, Date startDate, Date endDate, String type, double price) {
         this.membershipId = membershipId;
         this.memberId = memberId;

@@ -91,6 +91,12 @@ public class CoachController implements Initializable {
 
     private List<TextField> allFields;
 
+    /**
+     * Logs out the user and switches to the login view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the switch of the scene.
+     */
     @FXML
     void logOut(ActionEvent event) throws IOException {
         boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
@@ -98,26 +104,56 @@ public class CoachController implements Initializable {
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
 
+    /**
+     * Switches to the dashboard view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the switch of the scene.
+     */
     @FXML
     void switchToDashboard(ActionEvent event) throws IOException {
         SwitchScene.change("Dashboard", "dashboard-view.fxml", event);
     }
 
+    /**
+     * Switches to the members view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the switch of the scene.
+     */
     @FXML
     void switchToMembers(ActionEvent event) throws IOException {
         SwitchScene.change("Members", "member-view.fxml", event);
     }
 
+    /**
+     * Switches to the memberships view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the switch of the scene.
+     */
     @FXML
     void switchToMemberships(ActionEvent event) throws IOException {
         SwitchScene.change("Memberships", "membership-view.fxml", event);
     }
 
+    /**
+     * Switches to the supplements view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the switch of the scene.
+     */
     @FXML
     void switchToSupplements(ActionEvent event) throws IOException {
         SwitchScene.change("Supplements", "supplement-view.fxml", event);
     }
 
+    /**
+     * Adds a new coach to the database and updates the table.
+     *
+     * @param actionEvent The ActionEvent triggering the method.
+     * @throws SQLException If an error occurs during database access.
+     */
     @FXML
     public void addCoach(ActionEvent actionEvent) throws SQLException {
         Coach coach = createCoach();
@@ -131,6 +167,12 @@ public class CoachController implements Initializable {
         }
     }
 
+    /**
+     * Updates an existing coach in the database and updates the table.
+     *
+     * @param actionEvent The ActionEvent triggering the method.
+     * @throws SQLException If an error occurs during database access.
+     */
     @FXML
     public void updateCoach(ActionEvent actionEvent) throws SQLException {
         Coach coach = createCoach();
@@ -146,6 +188,12 @@ public class CoachController implements Initializable {
         }
     }
 
+    /**
+     * Deletes a coach from the database and updates the table.
+     *
+     * @param actionEvent The ActionEvent triggering the method.
+     * @throws SQLException If an error occurs during database access.
+     */
     @FXML
     public void deleteCoach(ActionEvent actionEvent) throws SQLException {
         Coach coach = createCoach();
@@ -161,11 +209,21 @@ public class CoachController implements Initializable {
         }
     }
 
+    /**
+     * Clears the input fields.
+     *
+     * @param actionEvent The ActionEvent triggering the method.
+     */
     @FXML
     public void clearFields(ActionEvent actionEvent) {
         CheckFields.clearFields(allFields);
     }
 
+    /**
+     * Creates a Coach object based on the input fields. Also handles input errors
+     *
+     * @return The created Coach object, or null if input is invalid.
+     */
     private Coach createCoach() {
         if (!CheckFields.areFieldsFilled(allFields))
             AlertUtil.showError("Empty fields", "Please fill all the fields");
@@ -184,6 +242,11 @@ public class CoachController implements Initializable {
         return null;
     }
 
+    /**
+     * Populates the table with coaches from the database.
+     *
+     * @throws SQLException If an error occurs during database access.
+     */
     private void populateTable() throws SQLException {
         coachTableView.getItems().clear();
 
@@ -198,6 +261,9 @@ public class CoachController implements Initializable {
         coachTableView.getItems().addAll(coaches);
     }
 
+    /**
+     * Handles the selection of items in the table.
+     */
     private void tableSelection() {
         coachTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
         {
@@ -211,12 +277,21 @@ public class CoachController implements Initializable {
         });
     }
 
+    /**
+     * Populates the gender and status ComboBoxes.
+     */
     private void populateComboBox() {
         ComboBoxPopulation combo = new ComboBoxPopulation();
         combo.populate(genderComboBox, Arrays.asList("Male", "Female"), "Male");
         combo.populate(statusComboBox, Arrays.asList("Active", "Inactive"), "Active");
     }
 
+    /**
+     * Initializes the controller, populates ComboBoxes, and sets up the table.
+     *
+     * @param url            The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {

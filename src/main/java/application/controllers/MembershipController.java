@@ -97,6 +97,12 @@ public class MembershipController implements Initializable {
 
     private List<TextField> allFields;
 
+    /**
+     * Logs the user out of the application after displaying a confirmation message.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void logOut(ActionEvent event) throws IOException {
         boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
@@ -104,26 +110,55 @@ public class MembershipController implements Initializable {
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the Coach view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToCoaches(ActionEvent event) throws IOException {
         SwitchScene.change("Coaches", "coach-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the "Dashboard" view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToDashboard(ActionEvent event) throws IOException {
         SwitchScene.change("Dashboard", "dashboard-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the Member view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToMembers(ActionEvent event) throws IOException {
         SwitchScene.change("Members", "member-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the Supplement view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToSupplements(ActionEvent event) throws IOException {
         SwitchScene.change("Supplements", "supplement-view.fxml", event);
     }
 
+    /**
+     * Creates a Membership object based on user input.
+     *
+     * @return The created Membership object, or null if creation fails.
+     */
     private Membership createMembership() {
         if (!CheckFields.areFieldsFilled(allFields))
             AlertUtil.showError("Empty fields", "Please fill all the fields");
@@ -144,6 +179,12 @@ public class MembershipController implements Initializable {
         return null;
     }
 
+    /**
+     * Adds a new Membership to the database and updates the UI.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws SQLException If a database access error occurs.
+     */
     @FXML
     void addMembership(ActionEvent event) throws SQLException {
         Membership membership = createMembership();
@@ -157,6 +198,12 @@ public class MembershipController implements Initializable {
         }
     }
 
+    /**
+     * Updates an existing Membership in the database and updates the UI.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws SQLException If a database access error occurs.
+     */
     @FXML
     void updateMembership(ActionEvent event) throws SQLException {
         Membership membership = createMembership();
@@ -175,6 +222,12 @@ public class MembershipController implements Initializable {
         }
     }
 
+    /**
+     * Deletes an existing Membership from the database and updates the UI.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws SQLException If a database access error occurs.
+     */
     @FXML
     void deleteMembership(ActionEvent event) throws SQLException {
         Membership membership = createMembership();
@@ -190,11 +243,17 @@ public class MembershipController implements Initializable {
         }
     }
 
+    /**
+     * Clears input fields in the UI.
+     */
     @FXML
     void clearFields() {
         CheckFields.clearFields(allFields);
     }
 
+    /**
+     * Configures the selection listener for the membershipTableView.
+     */
     private void tableSelection() {
         membershipTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
         {
@@ -209,6 +268,11 @@ public class MembershipController implements Initializable {
         });
     }
 
+    /**
+     * Populates the membershipTableView with data from the database.
+     *
+     * @throws SQLException If a database access error occurs.
+     */
     private void populateTable() throws SQLException {
         membershipTableView.getItems().clear();
 
@@ -226,10 +290,16 @@ public class MembershipController implements Initializable {
         clearFields();
     }
 
+    /**
+     * Populates the typeComboBox with predefined values.
+     */
     private void populateComboBox() {
         new ComboBoxPopulation().populate(typeComboBox, Arrays.asList("Regular", "Student"), "Regular");
     }
 
+    /**
+     * Updates the suggested price label based on user input changes.
+     */
     private void updateSuggestedPrice() {
         if (startDatePicker.getValue() == null ||
                 endDatePicker.getValue() == null ||
@@ -243,12 +313,23 @@ public class MembershipController implements Initializable {
         suggestedPriceLabel.setText("Suggested Price: $" + suggestedPrice);
     }
 
+    /**
+     * Configures listeners for the suggested price calculation when input values change.
+     */
     private void suggestPriceOnChange() {
         startDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> updateSuggestedPrice());
         endDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> updateSuggestedPrice());
         typeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateSuggestedPrice());
     }
 
+
+    /**
+     * Calculates the suggested price for a membership based on the number of days and membership type.
+     *
+     * @param numberOfDays The number of days for the membership.
+     * @param isStudent     True if the member is a student; false otherwise.
+     * @return The suggested price for the membership.
+     */
     private double calculateSuggestedPrice(long numberOfDays, Boolean isStudent) {
         final double PRICE_PER_DAY = 2.5;
         final double STUDENT_DISCOUNT = 0.8;
@@ -258,6 +339,12 @@ public class MembershipController implements Initializable {
         return suggestedPrice;
     }
 
+    /**
+     * Initializes the controller, populates UI elements, and configures event listeners.
+     *
+     * @param url            The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object, or null if none.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {

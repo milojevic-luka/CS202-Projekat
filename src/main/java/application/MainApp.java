@@ -9,7 +9,19 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * The main entry point of the JavaFX application.
+ * Extends the Application class, which is the base class for JavaFX applications.
+ */
 public class MainApp extends Application {
+
+    /**
+     * Initializes and launches the JavaFX application.
+     * It is an entry point that loads the main FXML view and sets up the stage.
+     *
+     * @param stage The primary stage for the JavaFX application.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("main-view.fxml"));
@@ -25,6 +37,12 @@ public class MainApp extends Application {
         stage.show();
     }
 
+    /**
+     * Displays a confirmation dialog before exiting the application.
+     * If the user confirms, it closes the specified stage.
+     *
+     * @param stage The JavaFX stage to be closed if the user confirms the exit.
+     */
     private void exitApp(Stage stage) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exiting");

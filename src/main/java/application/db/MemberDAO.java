@@ -7,8 +7,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) implementation for handling Member entities in the database.
+ */
 public class MemberDAO implements DAO<Member> {
 
+    /**
+     * Retrieves a list of all members from the database.
+     *
+     * @return A list containing all members.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public List<Member> getAll() throws SQLException {
         ArrayList<Member> members = new ArrayList<>();
@@ -31,6 +40,12 @@ public class MemberDAO implements DAO<Member> {
         return members;
     }
 
+    /**
+     * Inserts a new member into the database.
+     *
+     * @param member The member to be inserted.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public void insert(Member member) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -47,6 +62,13 @@ public class MemberDAO implements DAO<Member> {
         }
     }
 
+    /**
+     * Updates an existing member in the database.
+     *
+     * @param member The member to be updated.
+     * @throws SQLException If an error occurs during database access.
+     * @throws MemberNotFoundException If the specified member doesn't exist in the database.
+     */
     @Override
     public void update(Member member) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -66,6 +88,13 @@ public class MemberDAO implements DAO<Member> {
         }
     }
 
+    /**
+     * Deletes a member from the database.
+     *
+     * @param member The member to be deleted.
+     * @throws SQLException If an error occurs during database access.
+     * @throws MemberNotFoundException If the specified member doesn't exist in the database.
+     */
     @Override
     public void delete(Member member) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {

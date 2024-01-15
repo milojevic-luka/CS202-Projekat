@@ -1,5 +1,9 @@
 package application.entities;
 
+/**
+ * Represents an admin user in the application.
+ * With Constructor, Getter and Setter and toString methods
+ */
 public class Admin {
 
     private int id;
@@ -7,9 +11,20 @@ public class Admin {
     private String email;
     private String password;
 
+    /**
+     * Default constructor for the Admin class.
+     */
     public Admin() {
     }
 
+    /**
+     * Parameterized constructor for the Admin class with all fields.
+     *
+     * @param id       The unique identifier of the admin.
+     * @param username The username of the admin.
+     * @param email    The email address of the admin.
+     * @param password The password of the admin.
+     */
     public Admin(int id, String username, String email, String password) {
         this.id = id;
         this.username = username;
@@ -17,11 +32,24 @@ public class Admin {
         this.password = password;
     }
 
+    /**
+     * Constructor for the Admin class with username and password.
+     *
+     * @param username The username of the admin.
+     * @param password The password of the admin.
+     */
     public Admin(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
+    /**
+     * Constructor for the Admin class with username, email, and password.
+     *
+     * @param username The username of the admin.
+     * @param email    The email address of the admin.
+     * @param password The password of the admin.
+     */
     public Admin(String username, String email, String password) {
         this.username = username;
         this.email = email;

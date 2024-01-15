@@ -9,8 +9,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
+/**
+ * Utility class for switching scenes in a JavaFX application.
+ */
 public class SwitchScene {
+
+    /**
+     * Changes the scene to the specified FXML view with the given title.
+     *
+     * @param title      The title to be set for the new scene.
+     * @param fxmlView   The path to the FXML file representing the new scene.
+     * @param event      The ActionEvent that triggered the scene change.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
     public static void change(String title, String fxmlView, ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(fxmlView));
         Parent root = loader.load();

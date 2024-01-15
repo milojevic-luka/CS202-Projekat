@@ -1,5 +1,10 @@
 package application.entities;
 
+/**
+ * Entity class representing a coach.
+ * This class includes a parameterized constructor to initialize the coach attributes.
+ * Also contains Getter, Setter and toString methods
+ */
 public class Coach {
     private int coachId;
     private String firstName;
@@ -7,9 +12,21 @@ public class Coach {
     private String gender;
     private String status;
 
+    /**
+     * Default constructor for the Coach class.
+     */
     public Coach() {
     }
 
+    /**
+     * Parameterized constructor for the Coach class with all fields.
+     *
+     * @param coachId   The unique identifier of the coach.
+     * @param firstName The first name of the coach.
+     * @param lastName  The last name of the coach.
+     * @param gender    The gender of the coach.
+     * @param status    The status of the coach.
+     */
     public Coach(int coachId, String firstName, String lastName, String gender, String status) {
         this.coachId = coachId;
         this.firstName = firstName;

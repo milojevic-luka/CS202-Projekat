@@ -7,9 +7,17 @@ import java.sql.*;
 import java.util.Date;
 import java.util.*;
 
-
+/**
+ * Data Access Object (DAO) implementation for handling Membership entities in the database.
+ */
 public class MembershipDAO implements DAO<Membership> {
 
+    /**
+     * Retrieves a list of all memberships from the database, including member full names.
+     *
+     * @return A list containing all memberships.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public List getAll() throws SQLException {
         List<Membership> memberships = new ArrayList<>();
@@ -34,6 +42,12 @@ public class MembershipDAO implements DAO<Membership> {
         return memberships;
     }
 
+    /**
+     * Inserts a new membership into the database.
+     *
+     * @param membership The membership to be inserted.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public void insert(Membership membership) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -59,6 +73,13 @@ public class MembershipDAO implements DAO<Membership> {
         }
     }
 
+    /**
+     * Updates an existing membership in the database.
+     *
+     * @param membership The membership to be updated.
+     * @throws SQLException If an error occurs during database access.
+     * @throws MembershipNotFoundException If the specified membership doesn't exist in the database.
+     */
     @Override
     public void update(Membership membership) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -87,6 +108,13 @@ public class MembershipDAO implements DAO<Membership> {
         }
     }
 
+    /**
+     * Deletes a membership from the database.
+     *
+     * @param membership The membership to be deleted.
+     * @throws SQLException If an error occurs during database access.
+     * @throws MembershipNotFoundException If the specified membership doesn't exist in the database.
+     */
     @Override
     public void delete(Membership membership) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -98,40 +126,5 @@ public class MembershipDAO implements DAO<Membership> {
                     membership.getMembershipId() + " doesn't exist");
 
         }
-    }
-
-    public List<Map<String, Object>> getAllWithMember() throws SQLException {
-        List<Map<String, Object>> memberships = new ArrayList<>();
-
-        try (Connection connection = new DatabaseConnection().connectToDb()) {
-            String query = "SELECT " +
-                    "    M.MEMBERSHIP_ID, " +
-                    "    M.MEMBER_ID, " +
-                    "    CONCAT(MF.FIRST_NAME, ' ', MF.LAST_NAME) AS MEMBER_NAME, " +
-                    "    M.START_DATE, " +
-                    "    M.END_DATE, " +
-                    "    M.TYPE, " +
-                    "    M.PRICE " +
-                    "FROM " +
-                    "    MEMBERSHIP M " +
-                    "JOIN MEMBER MF ON M.MEMBER_ID = MF.MEMBER_ID;";
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
-
-            while (result.next()) {
-                Map<String, Object> membership = new HashMap<>();
-                membership.put("MEMBERSHIP_ID", result.getInt("MEMBERSHIP_ID"));
-                membership.put("MEMBER_ID", result.getInt("MEMBER_ID"));
-                membership.put("MEMBER_NAME", result.getString("MEMBER_NAME"));
-                membership.put("START_DATE", result.getDate("START_DATE"));
-                membership.put("END_DATE", result.getDate("END_DATE"));
-                membership.put("TYPE", result.getString("TYPE"));
-                membership.put("PRICE", result.getDouble("PRICE"));
-
-                memberships.add(membership);
-
-            }
-        }
-        return memberships;
     }
 }

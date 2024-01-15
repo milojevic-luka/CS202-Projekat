@@ -26,12 +26,23 @@ public class SignUpController {
     @FXML
     private TextField usernameInput;
 
+
+    /**
+     * Switches the scene back to the login view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void backToLogIn(ActionEvent event) throws IOException {
         SwitchScene.change("Log in", "main-view.fxml", event);
     }
 
-
+    /**
+     * Handles the sign-up process by validating input and creating a new user in the database.
+     *
+     * @param event The ActionEvent triggering the method.
+     */
     @FXML
     void signUp(ActionEvent event) {
 

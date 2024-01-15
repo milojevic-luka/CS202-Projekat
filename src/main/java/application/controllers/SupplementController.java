@@ -55,6 +55,12 @@ public class SupplementController implements Initializable {
     private final String URL = "https://www.ogistra-nutrition-shop.com/2-pocetak";
     private HostServices hostServices;
 
+    /**
+     * Logs the user out of the application after displaying a confirmation message.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void logOut(ActionEvent event) throws IOException {
         boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
@@ -62,26 +68,56 @@ public class SupplementController implements Initializable {
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the Coach view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToCoaches(ActionEvent event) throws IOException {
         SwitchScene.change("Coach", "coach-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the Dashboard view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToDashboard(ActionEvent event) throws IOException {
         SwitchScene.change("Dashboard", "dashboard-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the Member view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToMembers(ActionEvent event) throws IOException {
         SwitchScene.change("Members", "member-view.fxml", event);
     }
 
+    /**
+     * Switches the scene to the Membership view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an I/O error occurs while changing the scene.
+     */
     @FXML
     void switchToMemberships(ActionEvent event) throws IOException {
         SwitchScene.change("Membership", "membership-view.fxml", event);
     }
 
+    /**
+     * Scrapes supplement information from a given URL using Jsoup.
+     *
+     * @param url The URL to scrape supplement information from.
+     * @return A list of Supplement objects containing scraped information.
+     */
     private List<Supplement> scrapeSupplements(String url) {
         List<Supplement> supplementList = new ArrayList<>();
         try {
@@ -105,6 +141,12 @@ public class SupplementController implements Initializable {
         return supplementList;
     }
 
+    /**
+     * Creates a JavaFX VBox component representing a product card for a Supplement.
+     *
+     * @param supplement The Supplement for which to create a product card.
+     * @return The created VBox representing the product card.
+     */
     private VBox createProductCard(Supplement supplement) {
         VBox card = new VBox();
         card.setSpacing(3);
@@ -129,6 +171,12 @@ public class SupplementController implements Initializable {
         return card;
     }
 
+    /**
+     * Gets a "Buy" button for a Supplement with an action to open the product URL.
+     *
+     * @param supplement The Supplement for which to create the button.
+     * @return The "Buy" button.
+     */
     private static Button getBuyButton(Supplement supplement) {
         Button buyButton = new Button("Buy");
         buyButton.setOnAction(e -> {
@@ -144,6 +192,12 @@ public class SupplementController implements Initializable {
         return buyButton;
     }
 
+    /**
+     * Initializes the controller, scrapes supplement data, and populates the UI with product cards.
+     *
+     * @param url            The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object, or null if none.
+     */
     @Override
     public void initialize(java.net.URL url, ResourceBundle resourceBundle) {
         FlowPane flowPane = new FlowPane();

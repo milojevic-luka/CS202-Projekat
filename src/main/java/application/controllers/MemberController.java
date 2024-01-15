@@ -107,6 +107,13 @@ public class MemberController implements Initializable {
     private Button updateMemberButton;
     private List<TextField> allFields;
 
+    /**
+     * Logs out the user and prompts for confirmation.
+     * Changes the scene to the main view if the user confirms.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the scene change.
+     */
     @FXML
     void logOut(ActionEvent event) throws IOException {
         boolean isConfirmed = AlertUtil.showConfirm("Confirmation message",
@@ -114,26 +121,57 @@ public class MemberController implements Initializable {
         if (isConfirmed) SwitchScene.change("Log in", "main-view.fxml", event);
     }
 
+    /**
+     * Switches the view to the coaches' view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the scene change.
+     */
     @FXML
     void switchToCoaches(ActionEvent event) throws IOException {
         SwitchScene.change("Coaches", "coach-view.fxml", event);
     }
 
+    /**
+     * Switches the view to the dashboard.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the scene change.
+     */
     @FXML
     void switchToDashboard(ActionEvent event) throws IOException {
         SwitchScene.change("Dashboard", "dashboard-view.fxml", event);
     }
 
+    /**
+     * Switches the view to the memberships' view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the scene change.
+     */
     @FXML
     void switchToMemberships(ActionEvent event) throws IOException {
         SwitchScene.change("Memberships", "membership-view.fxml", event);
     }
 
+    /**
+     * Switches the view to the supplements' view.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws IOException If an error occurs during the scene change.
+     */
     @FXML
     void switchToSupplements(ActionEvent event) throws IOException {
         SwitchScene.change("Supplements", "supplement-view.fxml", event);
     }
 
+    /**
+     * Adds a member using the provided information.
+     * Shows an error message if the insertion fails.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     @FXML
     void addMember(ActionEvent event) throws SQLException {
         Member member = createMember();
@@ -147,6 +185,13 @@ public class MemberController implements Initializable {
         }
     }
 
+    /**
+     * Updates a member using the provided information.
+     * Shows an error message if the update fails.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     @FXML
     void updateMember(ActionEvent event) throws SQLException {
         Member member = createMember();
@@ -163,6 +208,13 @@ public class MemberController implements Initializable {
         }
     }
 
+    /**
+     * Deletes a member using the provided information.
+     * Shows an error message if the deletion fails.
+     *
+     * @param event The ActionEvent triggering the method.
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     @FXML
     void deleteMember(ActionEvent event) throws SQLException {
         Member member = createMember();
@@ -177,12 +229,22 @@ public class MemberController implements Initializable {
         }
     }
 
+    /**
+     * Clears all input fields.
+     *
+     * @param event The ActionEvent triggering the method.
+     */
     @FXML
     void clearFields(ActionEvent event) {
         CheckFields.clearFields(allFields);
     }
 
 
+    /**
+     * Creates a Member object using the input field values.
+     *
+     * @return The created Member object, or null if input validation fails.
+     */
     private Member createMember() {
         if (!CheckFields.areFieldsFilled(allFields))
             AlertUtil.showError("Empty fields", "Please fill all the fields");
@@ -204,11 +266,16 @@ public class MemberController implements Initializable {
         return null;
     }
 
+    /**
+     * Populates the gender ComboBox with predefined values and sets the default value.
+     */
     private void populateComboBox() {
         new ComboBoxPopulation().populate(genderComboBox, Arrays.asList("Male", "Female"), "Male");
     }
 
-
+    /**
+     * Sets up listeners for table selection events, updating input fields accordingly.
+     */
     private void tableSelection() {
         memberTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
         {
@@ -228,6 +295,11 @@ public class MemberController implements Initializable {
         });
     }
 
+    /**
+     * Populates the member table with data from the database.
+     *
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     private void populateMemberTable() throws SQLException {
         memberTableView.getItems().clear();
 
@@ -243,6 +315,11 @@ public class MemberController implements Initializable {
         memberTableView.getItems().addAll(members);
     }
 
+    /**
+     * Populates the coach table with data from the database.
+     *
+     * @throws SQLException If an SQL exception occurs during database access.
+     */
     private void populateCoachTable() throws SQLException {
         coachTableView.getItems().clear();
 
@@ -255,6 +332,12 @@ public class MemberController implements Initializable {
         coachTableView.getItems().addAll(coaches);
     }
 
+    /**
+     * Initializes the controller, populating ComboBoxes and tables, and setting up listeners.
+     *
+     * @param url            The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {

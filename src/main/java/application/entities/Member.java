@@ -1,5 +1,10 @@
 package application.entities;
 
+/**
+ * Entity class representing a member.
+ * This class includes a parameterized constructor to initialize the member attributes.
+ * Also contains Getter, Setter and toString methods
+ */
 public class Member {
     private int coachId;
     private int memberId;
@@ -8,10 +13,22 @@ public class Member {
     private String gender;
     private String phoneNum;
 
+    /**
+     * Default constructor for the Member class.
+     */
     public Member() {
-        // Empty constructor
     }
 
+    /**
+     * Parameterized constructor for the Member class with all fields.
+     *
+     * @param coachId   The unique identifier of the coach associated with the member.
+     * @param memberId  The unique identifier of the member.
+     * @param firstName The first name of the member.
+     * @param lastName  The last name of the member.
+     * @param gender    The gender of the member.
+     * @param phoneNum  The phone number of the member.
+     */
     public Member(int coachId, int memberId, String firstName, String lastName, String gender, String phoneNum) {
         this.coachId = coachId;
         this.memberId = memberId;

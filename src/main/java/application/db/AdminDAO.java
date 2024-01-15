@@ -6,7 +6,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) implementation for handling Admin entities in the database.
+ */
 public class AdminDAO implements DAO<Admin> {
+
+    /**
+     * Retrieves a list of all admins from the database.
+     *
+     * @return A list containing all admins.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public List<Admin> getAll() throws SQLException {
         List<Admin> admins = new ArrayList<>();
@@ -26,6 +36,12 @@ public class AdminDAO implements DAO<Admin> {
         return admins;
     }
 
+    /**
+     * Inserts a new admin into the database.
+     *
+     * @param admin The admin to be inserted.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public void insert(Admin admin) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
@@ -39,16 +55,35 @@ public class AdminDAO implements DAO<Admin> {
         }
     }
 
+    /**
+     * Updates an existing admin in the database.
+     *
+     * @param admin The admin to be updated.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public void update(Admin admin) throws SQLException {
 
     }
 
+    /**
+     * Deletes an admin from the database.
+     *
+     * @param admin The admin to be deleted.
+     * @throws SQLException If an error occurs during database access.
+     */
     @Override
     public void delete(Admin admin) throws SQLException {
 
     }
 
+    /**
+     * Checks the credentials of an admin in the database.
+     *
+     * @param admin The admin whose credentials are to be checked.
+     * @return True if the credentials are valid, false otherwise.
+     * @throws SQLException If an error occurs during database access.
+     */
     public boolean checkCredentials(Admin admin) throws SQLException {
         try (Connection connection = new DatabaseConnection().connectToDb()) {
             String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
