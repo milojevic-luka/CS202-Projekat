@@ -1,4 +1,4 @@
-module com.luka.main {
+module com.main {
     requires javafx.controls;
     requires javafx.fxml;
 

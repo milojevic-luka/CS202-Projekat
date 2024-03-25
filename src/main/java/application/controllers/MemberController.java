@@ -11,6 +11,8 @@ import application.ui.CheckFields;
 import application.ui.ComboBoxPopulation;
 import application.ui.SwitchScene;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,6 +22,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Border;
+import javafx.scene.paint.Paint;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -179,6 +183,7 @@ public class MemberController implements Initializable {
             try {
                 new MemberDAO().insert(member);
                 populateMemberTable();
+                AlertUtil.showInfo("Added user", "Member with ID " + member.getMemberId() + " successfully");
             } catch (SQLIntegrityConstraintViolationException e) {
                 AlertUtil.showError("Insert error", e.getSQLState());
             }
@@ -346,8 +351,20 @@ public class MemberController implements Initializable {
             populateMemberTable();
             populateCoachTable();
             tableSelection();
+            addTextLimiter(phoneInput, 9);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void addTextLimiter(final TextField tf, final int maxLength) {
+        tf.textProperty().addListener((ov, oldValue, newValue) -> {
+            if (tf.getText().length() > maxLength) {
+                String s = tf.getText().substring(0, maxLength);
+                tf.setText(s);
+                tf.setBorder(Border.stroke(Paint.valueOf("")));
+                AlertUtil.showError("Input error","Can't have more than " + maxLength + " characters");
+            }
+        });
     }
 }
